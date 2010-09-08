@@ -3,7 +3,9 @@ require(APPPATH.'libraries/REST_Controller.php');
 
 class cinemark extends REST_Controller {
 	function index_get(){
-		$this->response('index', 200);
+		$this->response(array(
+			'params' => $this->uri->uri_to_assoc()
+		), 200);
 	}
 } 
 
