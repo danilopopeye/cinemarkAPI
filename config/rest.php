@@ -10,7 +10,7 @@
 |	Default: xml
 |
 */
-$config['rest_default_format'] = 'xml';
+$config['rest_default_format'] = 'json';
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +22,7 @@ $config['rest_default_format'] = 'xml';
 |	E.g: My Secret REST API
 |
 */
-$config['rest_realm'] = 'REST API';
+$config['rest_realm'] = 'Cinemark API';
 
 /*
 |--------------------------------------------------------------------------
