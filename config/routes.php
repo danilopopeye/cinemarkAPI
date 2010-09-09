@@ -40,7 +40,7 @@
 |
 */
 
-$route['default_controller'] = "cinemark";
+$route['default_controller'] = "api";
 $route['scaffolding_trigger'] = "";
 
 
