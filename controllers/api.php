@@ -1,7 +1,7 @@
 <?php
 require(APPPATH.'libraries/REST_Controller.php');
 
-class cinemark extends REST_Controller {
+class api extends REST_Controller {
 	function index_get(){
 		$this->response(array(
 			'params' => $this->uri->uri_to_assoc(),
@@ -11,5 +11,5 @@ class cinemark extends REST_Controller {
 	}
 } 
 
-/* End of file cinemark.php */
-/* Location: controllers/cinemark.php */
+/* End of file api.php */
+/* Location: controllers/api.php */
