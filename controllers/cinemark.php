@@ -3,9 +3,10 @@ require(APPPATH.'libraries/REST_Controller.php');
 
 class cinemark extends REST_Controller {
 	function index_get(){
-		$this->load->library('Parser');
 		$this->response(array(
-			'params' => $this->uri->uri_to_assoc()
+			'params' => $this->uri->uri_to_assoc(),
+			'error' => $this->parser->getPage('http://a.localhost'),
+			'request' => $this->parser->getPage('http://is.gd')
 		), 200);
 	}
 } 
