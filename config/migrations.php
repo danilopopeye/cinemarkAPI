@@ -12,7 +12,7 @@
 | Some more severe security measures might take place in future releases.
 |
 */
-$config["migrations_enabled"] = FALSE;
+$config["migrations_enabled"] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
