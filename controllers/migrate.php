@@ -26,6 +26,7 @@ class Migrate extends Controller {
 	function Migrate() {
 
 		parent::Controller();
+		
 		$this->lang->load("migrations");
 		if(is_file(APPPATH."config/migrations.php")) include APPPATH."config/migrations.php";
 
@@ -192,6 +193,9 @@ class Migrate extends Controller {
 			echo "<p>Current schema version: ".$schema_version."<br/>";
 			echo "Moving ".$method." to version ".$version."</p>";
 			echo "<hr/>";
+			
+			$CI = & get_instance();
+			$CI->load->dbforge();
 
 			foreach ( $migrations as $m ) {
 
@@ -200,7 +204,7 @@ class Migrate extends Controller {
 				echo "$m:<br />";
 				echo "<blockquote>";
 				$class = ucfirst($m);
-				call_user_func(array($class, $method));
+				call_user_func(array($class, $method), $CI->dbforge);
 				echo "</blockquote>";
 				echo "<hr/>";
 				$schema_version += $step;
