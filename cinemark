@@ -1,0 +1,21 @@
+<VirtualHost *:80>
+	ServerName api.localhost
+	DocumentRoot "/home/danilo/code/cinemarkAPI"
+
+	<Directory />
+		AllowOverride all 
+
+		<Limit GET POST PUT DELETE>
+			Order allow,deny
+			Allow from all
+		</Limit>
+	</Directory>
+
+	ErrorLog /var/log/apache2/error-cinemark.log
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel debug
+
+	CustomLog /var/log/apache2/access-cinemark.log combined
+</VirtualHost>
