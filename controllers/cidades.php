@@ -14,8 +14,6 @@ class Cidades extends Controller {
 	}
 
 	function findById($id){
-		echo "\nargs ~ ";
-		print_r( func_get_args() );
 		$this->load->view('json', array(
 			'data' => $this->cidades->get( $id )
 		));
