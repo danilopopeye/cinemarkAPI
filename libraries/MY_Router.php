@@ -94,7 +94,7 @@ class MY_Router extends CI_Router {
 			}
 			if (isset($methods['findById']) && $methods['findById']) {
 				$route[$controller . '/(:num)']['GET'] = $controller . '/' . $methods['findById'] . '/$1';
-				$route[$controller . '/(:num)\.([a-z]+)']['GET'] = $controller . '/' . $methods['findById'] . '/$1/$2';
+				$route[$controller . '/(:num)\.(json|xml)']['GET'] = $controller . '/' . $methods['findById'] . '/$1/$2';
 			}
 			if (isset($methods['update']) && $methods['update']) {
 				$route[$controller . '/(:num)']['POST'] = $controller . '/' . $methods['update'] . '/$1';
@@ -104,7 +104,8 @@ class MY_Router extends CI_Router {
 				$route[$controller . '/(:num)']['DELETE'] = $controller . '/' . $methods['delete'] . '/$1';
 			}
 			if (isset($methods['findAll']) && $methods['findAll']) {
-				$route[$controller]['GET'] = $controller . '/' . $methods['findAll'];
+				$route[$controller]['GET']									= $controller . '/' . $methods['findAll'];
+				$route[$controller . '\.(json|xml)']['GET'] = $controller . '/' . $methods['findAll'] . '/$1';
 			}
 			if (isset($methods['add']) && $methods['add']) {
 				$route[$controller]['POST'] = $controller . '/' . $methods['add'];

@@ -48,6 +48,6 @@
  *  can simply omit that declaration, or set the declaration to empty string/null/false
  */
 
-
+define('DEFAULT_REST_FORMAT', 'json');
 
 $rest['cidades'] = DEFAULT_REST_METHODS;
