@@ -158,7 +158,7 @@ $config['directory_trigger'] 	= 'd'; // experimental not currently in use
 | Error Logging Threshold
 |--------------------------------------------------------------------------
 |
-| If you have enabled error logging, you can set an error threshold to 
+| If you have enabled error logging, you can set an error threshold to
 | determine what gets logged. Threshold options are:
 | You can enable error logging by setting a threshold over zero. The
 | threshold determines what gets logged. Threshold options are:
@@ -323,6 +323,25 @@ $config['rewrite_short_tags'] = FALSE;
 |
 */
 $config['proxy_ips'] = '';
+
+/*
+|--------------------------------------------------------------------------
+| REST headers and formats
+|--------------------------------------------------------------------------
+|
+| List the accepted formats and its respectives headers
+|
+*/
+$config['REST_headers'] = array(
+	'xml'       => 'application/xml',
+	'rawxml'    => 'application/xml',
+	'json'      => 'application/json',
+	'serialize' => 'application/vnd.php.serialized',
+	'php'       => 'text/plain',
+	'html'      => 'text/html',
+	'csv'       => 'application/csv'
+);
+$config['REST_formats'] = array_keys( $config['REST_headers'] );
 
 
 /* End of file config.php */

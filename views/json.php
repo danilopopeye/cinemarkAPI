@@ -1,4 +1,1 @@
-<?php
-//TODO: set header
-echo json_encode( $data );
-?>
+<?php echo json_encode( $data ); ?>

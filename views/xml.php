@@ -39,6 +39,6 @@ function rawxml($data = array(), $structure = NULL, $basenode = 'xml'){
 	return $structure->asXML();
 }
 
-//TODO: set header
 echo rawxml( $data );
+
 ?>

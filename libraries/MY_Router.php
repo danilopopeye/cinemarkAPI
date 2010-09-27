@@ -20,6 +20,7 @@
  *
  */
 class MY_Router extends CI_Router {
+	private $formats;
 
 	function MY_Router() {
 		$this->config =& load_class('Config');
@@ -28,8 +29,11 @@ class MY_Router extends CI_Router {
 		if ($this->config->item('uri_protocol') == 'AUTO') {
 			$_GET = array();
 		}
-		parent::CI_Router();
 
+		// REST accepted formats
+		$this->formats = $this->config->item('REST_formats');
+
+		parent::CI_Router();
 	}
 
 	/**
@@ -58,6 +62,25 @@ class MY_Router extends CI_Router {
 			}
 		}
 
+		$this->format = $this->parse_format( $this->uri->rsegments );
+	}
+
+	/**
+	 * detect the requested format
+	 */
+	function parse_format( $seg ){
+		if( in_array( $seg[1], array('find', 'findAll', 'findById') ) == TRUE ){
+			// deal with queryString
+			$format = isset( $seg[2] )
+				? is_array( $seg[2] ) && isset( $seg[2]['format'] )
+					? $seg[2]['format'] : $seg[2]
+				: NULL;
+
+			return in_array( strtolower( $format ), $this->formats )
+				? $format : DEFAULT_REST_FORMAT;
+		} else {
+			return FALSE;
+		}
 	}
 
 	/**
@@ -66,6 +89,7 @@ class MY_Router extends CI_Router {
 	 */
 	function setupRestRouting() {
 		define('DEFAULT_REST_METHODS', 'DEFAULT_REST_METHODS');
+		define('DEFAULT_REST_FORMAT', 'json');
 
 		$defaultRestMethods = array(
 			'find' => 'find',
@@ -76,10 +100,12 @@ class MY_Router extends CI_Router {
 			'findAll' => 'findAll'
 		);
 
-
 		//load the rest config
 		@include(APPPATH.'config' . DIRECTORY_SEPARATOR .'rest'. EXT);
 		$rest = ( ! isset($rest) OR ! is_array($rest)) ? array() : $rest;
+
+		// format the REST formats
+		$formats = implode( "|", $this->formats );
 
 		foreach($rest as $controller => $methods) {
 			if ($methods == DEFAULT_REST_METHODS) {
@@ -94,7 +120,7 @@ class MY_Router extends CI_Router {
 			}
 			if (isset($methods['findById']) && $methods['findById']) {
 				$route[$controller . '/(:num)']['GET'] = $controller . '/' . $methods['findById'] . '/$1';
-				$route[$controller . '/(:num)\.(json|xml)']['GET'] = $controller . '/' . $methods['findById'] . '/$1/$2';
+				$route[$controller . '/(:num)\.('. $formats .')']['GET'] = $controller . '/' . $methods['findById'] . '/$1/$2';
 			}
 			if (isset($methods['update']) && $methods['update']) {
 				$route[$controller . '/(:num)']['POST'] = $controller . '/' . $methods['update'] . '/$1';
@@ -105,7 +131,7 @@ class MY_Router extends CI_Router {
 			}
 			if (isset($methods['findAll']) && $methods['findAll']) {
 				$route[$controller]['GET']									= $controller . '/' . $methods['findAll'];
-				$route[$controller . '\.(json|xml)']['GET'] = $controller . '/' . $methods['findAll'] . '/$1';
+				$route[$controller . '\.('. $formats .')']['GET'] = $controller . '/' . $methods['findAll'] . '/$1';
 			}
 			if (isset($methods['add']) && $methods['add']) {
 				$route[$controller]['POST'] = $controller . '/' . $methods['add'];
