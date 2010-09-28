@@ -30,8 +30,6 @@ function rawxml($data = array(), $structure = NULL, $basenode = 'xml'){
 			$node = $structure->addChild( $key );
 			rawxml( $value, $node, $basenode );
 		} else {
-			$value = htmlentities( $value, ENT_NOQUOTES, "UTF-8" );
-
 			$structure->addChild( $key, $value );
 		}
 	}
