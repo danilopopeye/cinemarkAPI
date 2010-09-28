@@ -2,11 +2,11 @@
 
 class Create_table_cidades {
 
-    function up( $db ) {
+    function up( $dbf, $db ) {
         echo 'Creating table "cidades"...';
 
-				$db->add_field('id');
-				$db->add_field( array(
+				$dbf->add_field('id');
+				$dbf->add_field( array(
 					'name' => array(
 						'type' => 'VARCHAR',
 						'constraint' => '100',
@@ -14,15 +14,15 @@ class Create_table_cidades {
 					)
 				) );
 
-				$db->create_table('cidades');
+				$dbf->create_table('cidades');
 
         echo 'DONE<br />';
     }
     
-    function down( $db ) {
+    function down( $dbf, $db ) {
         echo 'Droping table "cidades"...';
 
-        $db->drop_table('cidades');
+        $dbf->drop_table('cidades');
 
         echo 'DONE<br />';
     }
