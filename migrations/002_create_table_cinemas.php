@@ -7,6 +7,10 @@ class Create_table_cinemas {
 
 				$db->add_field('id');
 				$db->add_field( array(
+					'idCidade' => array(
+						'type' => 'INT',
+						'null' => FALSE
+					),
 					'name' => array(
 						'type' => 'VARCHAR',
 						'constraint' => '100',
