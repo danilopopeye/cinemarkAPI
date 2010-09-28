@@ -17,7 +17,7 @@ class REST_Controller extends Controller {
 		$format = $this->router->format;
 
 		if( $format != FALSE ){
-			$this->output->set_header('Content-type: '. $headers[ $format ] );
+			$this->output->set_header('Content-type: '. $headers[ $format ] .'; charset=utf-8;' );
 		}
 
 		$this->load->view( $format, array(
