@@ -7,7 +7,7 @@ class Create_table_cidades {
 
 				$dbf->add_field('id');
 				$dbf->add_field( array(
-					'name' => array(
+					'nome' => array(
 						'type' => 'VARCHAR',
 						'constraint' => '100',
 						'null' => FALSE
