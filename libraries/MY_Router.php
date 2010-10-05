@@ -69,18 +69,33 @@ class MY_Router extends CI_Router {
 	 * detect the requested format
 	 */
 	function parse_format( $seg ){
-		if( in_array( $seg[1], array('find', 'findAll', 'findById') ) == TRUE ){
-			// deal with queryString
-			$format = isset( $seg[2] )
-				? is_array( $seg[2] ) && isset( $seg[2]['format'] )
-					? $seg[2]['format'] : $seg[2]
-				: NULL;
+		if( in_array( $seg[1], array('findAll', 'findById') ) == TRUE ){
+			$format = array_pop( $seg );
 
 			return in_array( strtolower( $format ), $this->formats )
 				? $format : DEFAULT_REST_FORMAT;
 		} else {
 			return FALSE;
 		}
+	}
+
+	/**
+	 * detect the API Key
+	 */
+	function parse_key( $uri ){
+		$parts = explode( '?', $uri );
+
+		if( isset( $parts[1] ) ){
+			parse_str( $parts[1], $param );
+
+			if( ! isset( $param['key'] ) || ! preg_match('/[a-z0-9]{32}/i', $param['key']) ){
+				show_error('Key not found or invalid!', 401);
+			}
+
+			$this->key = $param['key'];
+		}
+
+		return $parts[0];
 	}
 
 	/**
@@ -113,11 +128,6 @@ class MY_Router extends CI_Router {
 			}
 			$controller = strtolower($controller);
 
-			if (isset($methods['find']) && $methods['find']) {
-				$route[$controller . '/?\?(:any)'] = array(
-					'GET'=> $controller . '/' . $methods['find'] . '/$1'
-				 );
-			}
 			if (isset($methods['findById']) && $methods['findById']) {
 				$route[$controller . '/(:num)']['GET'] = $controller . '/' . $methods['findById'] . '/$1';
 				$route[$controller . '/(:num)\.('. $formats .')']['GET'] = $controller . '/' . $methods['findById'] . '/$1/$2';
@@ -130,7 +140,7 @@ class MY_Router extends CI_Router {
 				$route[$controller . '/(:num)']['DELETE'] = $controller . '/' . $methods['delete'] . '/$1';
 			}
 			if (isset($methods['findAll']) && $methods['findAll']) {
-				$route[$controller]['GET']									= $controller . '/' . $methods['findAll'];
+				$route[$controller]['GET'] = $controller . '/' . $methods['findAll'];
 				$route[$controller . '\.('. $formats .')']['GET'] = $controller . '/' . $methods['findAll'] . '/$1';
 			}
 			if (isset($methods['add']) && $methods['add']) {
@@ -231,6 +241,9 @@ class MY_Router extends CI_Router {
 
       // Turn the segment array into a URI string
       $uri = strtolower(implode('/', $this->uri->segments));
+
+      // REST key
+      $uri = $this->parse_key( $uri );
 
       // Is there a literal match?  If so we're done
       if (isset($this->routes[$uri]))

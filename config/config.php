@@ -343,6 +343,15 @@ $config['REST_headers'] = array(
 );
 $config['REST_formats'] = array_keys( $config['REST_headers'] );
 
+/*
+|--------------------------------------------------------------------------
+| REST API Key
+|--------------------------------------------------------------------------
+|
+| Determines whether a valid API Key is needed
+|
+*/
+$config['REST_key'] = TRUE;
 
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */
