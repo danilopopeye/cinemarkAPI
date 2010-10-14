@@ -21,6 +21,7 @@
  */
 class MY_Router extends CI_Router {
 	private $formats;
+	public $key;
 
 	function MY_Router() {
 		$this->config =& load_class('Config');
@@ -32,6 +33,9 @@ class MY_Router extends CI_Router {
 
 		// REST accepted formats
 		$this->formats = $this->config->item('REST_formats');
+
+		// Check for the KEY
+		$this->needKey = $this->config->item('REST_key');
 
 		parent::CI_Router();
 	}
@@ -85,14 +89,19 @@ class MY_Router extends CI_Router {
 	function parse_key( $uri ){
 		$parts = explode( '?', $uri );
 
-		if( isset( $parts[1] ) ){
-			parse_str( $parts[1], $param );
+		if( $this->needKey ){
+			// TODO: caso venha usar key no POST / PUT / DELETE tratar aqui ;)
+			if( isset( $parts[1] ) ){
+				parse_str( $parts[1], $param );
 
-			if( ! isset( $param['key'] ) || ! preg_match('/[a-z0-9]{32}/i', $param['key']) ){
+				if( ! isset( $param['key'] ) || ! preg_match('/[a-z0-9]{32}/i', $param['key']) ){
+					show_error('Key not found or invalid!', 401);
+				}
+
+				$this->key = $param['key'];
+			} else {
 				show_error('Key not found or invalid!', 401);
 			}
-
-			$this->key = $param['key'];
 		}
 
 		return $parts[0];
