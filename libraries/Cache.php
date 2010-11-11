@@ -255,7 +255,7 @@ class Cache
 	 * @param	string
 	 * @param	int
 	 * @param	array
-	 * @return	void
+	 * @return	array
 	 */
 	function write($contents = NULL, $filename = NULL, $expires = NULL, $dependencies = array())
 	{
@@ -276,7 +276,9 @@ class Cache
 		// Check directory permissions
 		if ( ! is_dir($this->path) OR ! is_really_writable($this->path))
 		{
-			return;
+			return array(
+				'status' => FALSE, 'message' => 'Not a directory or not writable'
+			);
 		}
 
 		// check if filename contains dirs
@@ -300,8 +302,11 @@ class Cache
 		// Open the file and log if an error occures
 		if ( ! $fp = @fopen($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
 		{
-			log_message('error', "Unable to write Cache file: ".$cache_path);
-			return;
+			$message = "Unable to write Cache file: ".$cache_path;
+			log_message('error', $message);
+			return array(
+				'status' => false, 'message' => $message
+			);
 		}
 
 		// Meta variables
@@ -327,8 +332,11 @@ class Cache
 		}
 		else
 		{
-			log_message('error', "Cache was unable to secure a file lock for file at: ".$cache_path);
-			return;
+			$message = "Cache was unable to secure a file lock for file at: ".$cache_path;
+			log_message('error', $message);
+			return array(
+				'status' => false, 'message' => $message
+			);
 		}
 		fclose($fp);
 		@chmod($cache_path, DIR_WRITE_MODE);
@@ -338,6 +346,8 @@ class Cache
 
 		// Reset values
 		$this->_reset();
+
+		return $contents;
 	}
 
 	/**
