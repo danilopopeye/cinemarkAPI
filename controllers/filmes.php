@@ -1,21 +1,21 @@
 <?php
 
-class Cinemas extends REST_Controller {
+class Filmes extends REST_Controller {
 	function __construct(){
 		parent::REST_Controller();
 
-		$this->load->model('MCinemas','cinemas');
+		$this->load->model('MFilmes','filmes');
 	}
 
 	function findAll(){
 		$this->response(
-			$this->cinemas->getAll()
+			$this->filmes->getAll()
 		);
 	}
 
 	function findById($id){
 		$this->response(
-			$this->cinemas->get( $id )
+			$this->filmes->get( $id )
 		);
 	}
 
@@ -25,11 +25,11 @@ class Cinemas extends REST_Controller {
 		}
 
 		$this->response(
-			$this->cinemas->get( $q['id'] )
+			$this->filmes->get( $q['id'] )
 		);
 	}
 
 }
 
-/* End of file cinemas.php */
-/* Location: controllers/cinemas.php */
+/* End of file filmes.php */
+/* Location: controllers/filmes.php */

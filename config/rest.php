@@ -50,3 +50,4 @@
 
 $rest['cidades'] = DEFAULT_REST_METHODS;
 $rest['cinemas'] = DEFAULT_REST_METHODS;
+$rest['filmes'] = DEFAULT_REST_METHODS;

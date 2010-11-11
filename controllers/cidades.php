@@ -2,7 +2,7 @@
 
 class Cidades extends REST_Controller {
 	function __construct(){
-		parent::Controller();
+		parent::REST_Controller();
 
 		$this->load->model('MCidades','cidades');
 	}
