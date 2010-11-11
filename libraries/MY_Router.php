@@ -87,6 +87,11 @@ class MY_Router extends CI_Router {
 	 * detect the API Key
 	 */
 	function parse_key( $uri ){
+		// INFO: dont ask for key on CLI, is this secure !?
+		if( $this->config->item('uri_protocol') === 'CLI' ){
+			return $uri;
+		}
+
 		$parts = explode( '?', $uri );
 
 		if( $this->needKey ){
