@@ -353,5 +353,26 @@ $config['REST_formats'] = array_keys( $config['REST_headers'] );
 */
 $config['REST_key'] = TRUE;
 
+
+/*
+|--------------------------------------------------------------------------
+| Cache library directory
+|--------------------------------------------------------------------------
+|
+| Determines which directory the cache files will be saved
+|
+*/
+$config['cache_dir'] = APPPATH . 'cache/';
+
+/*
+|--------------------------------------------------------------------------
+| Cache library expiration
+|--------------------------------------------------------------------------
+|
+| Number of SECONDS you want the cache to last.
+|
+*/
+$config['cache_default_expires'] = 0;
+
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */
