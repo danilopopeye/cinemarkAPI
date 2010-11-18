@@ -2,6 +2,7 @@
 
 class Parser {
 	private $ci;
+	private $db;
 	protected $urls	= array(
 		'javascript' => 'http://www.cinemark.com.br/scripts/javascript_scale.js',
 		'filme' => 'http://www.cinemark.com.br/horarios/bolso/?filme=' // idFilme
@@ -9,6 +10,7 @@ class Parser {
 
 	function __construct(){
 		$this->ci =& get_instance();
+		$this->db = $this->ci->db;
 		log_message('debug', 'Parser: Class Initialized');
 	}
 
@@ -32,6 +34,32 @@ class Parser {
 		);
 	}
 	
+	public function cidades($force = FALSE){
+		$get = $this->getJS( $force );
+
+		if( isset( $get['status'] ) && $get['status'] === FALSE ){
+			return $get;
+		}
+
+		// start the transaction
+		$this->db->trans_begin();
+
+		$this->db->truncate('cidades');
+
+		foreach( $get['cidades'] as $id => $name ){
+			$sql = $this->db->insert('cidades', array(
+				'id' => $id, 'nome' => $name
+			) );
+		}
+
+		// save or discard the changes
+		if( $this->db->trans_status() === FALSE ){
+			return $this->db->trans_rollback();
+		} else {
+			return $this->db->trans_commit();
+		}
+	}
+	
 	public function javascript($options = array()){
 		$options = array_merge( array(
 			'cidades' => FALSE,
@@ -42,34 +70,6 @@ class Parser {
 
 		if( ! in_array( TRUE, array_values( $options ) ) ){
 			return array();
-		}
-
-		$get = $this->getPage( $this->urls['javascript'] );
-
-		if( $get['error']['code'] != 0 ){
-			return $get['error'];
-		}
-
-		// encode the response to UTF8
-		$file = utf8_encode( $get['response'] );
-
-		$file = str_replace('var', '', $file);
-
-		$file = str_replace('new Array', 'array', $file);
-
-		$file = str_replace('_', '$', $file);
-
-		$file = str_replace('idx', '$idx', $file);
-
-		$file = str_replace("'\n", "';\n", $file);
-
-		$file = str_replace("<!--", "", $file);
-		$file = str_replace("//-->", "", $file);
-
-		if( eval( $file ) === FALSE ){
-			return array(
-				'code' => 0, 'message' => 'eval() error'
-			);
 		}
 
 		$db = $this->ci->db;
@@ -120,6 +120,53 @@ class Parser {
 	}
 
 	// privates
+
+	private function getJS( $force = FALSE ){
+		$filename = 'javascript';
+
+		if( $force === FALSE ){
+			$cache = $this->ci->cache->get( $filename );
+
+			if( $cache !== FALSE ){
+				return $cache;
+			}
+		}
+
+		$get = $this->getPage( $this->urls[ $filename ] );
+
+		if( $get['error']['code'] != 0 ){
+			return $get['error'];
+		}
+
+		// encode the response to UTF8
+		$file = utf8_encode( $get['response'] );
+
+		$file = str_replace('var', '', $file);
+
+		$file = str_replace('new Array', 'array', $file);
+
+		$file = str_replace('_', '$', $file);
+
+		$file = str_replace('idx', '$idx', $file);
+
+		$file = str_replace("'\n", "';\n", $file);
+
+		$file = str_replace("<!--", "", $file);
+		$file = str_replace("//-->", "", $file);
+
+		if( eval( $file ) === FALSE ){
+			return array(
+				'code' => 0, 'message' => "syntax error, eval()'d code"
+			);
+		}
+
+		return $this->ci->cache->write( array(
+			'cidades' => $Cidades,
+			'cinemas' => $this->parseCinemas( $Cinemas ),
+			'filmes' => $Filmes,
+			'programacao' => $FilmesProgramados
+		), $filename );
+	}
 
 	private function parseItem($k, $v, $t) {
 		return array(
