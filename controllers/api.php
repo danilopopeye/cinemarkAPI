@@ -24,14 +24,9 @@ class api extends Controller {
 	}
 
 	function cidades(){
-		$force = in_array('force', $this->uri->segment_array());
-
 		echo
-
 			'Parseando cidades...',
-
-			$this->parser->cidades( $force ) ? 'OK' : 'Erro',
-			
+				TAB, $this->parser->cidades() ? 'OK' : 'Erro',
 			BR;
 	}
 } 

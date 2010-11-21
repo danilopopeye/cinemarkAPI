@@ -3,6 +3,7 @@
 class Parser {
 	private $ci;
 	private $db;
+	private $force;
 	protected $urls	= array(
 		'javascript' => 'http://www.cinemark.com.br/scripts/javascript_scale.js',
 		'filme' => 'http://www.cinemark.com.br/horarios/bolso/?filme=' // idFilme
@@ -11,6 +12,7 @@ class Parser {
 	function __construct(){
 		$this->ci =& get_instance();
 		$this->db = $this->ci->db;
+		$this->force = in_array('force', $this->ci->uri->segment_array());
 		log_message('debug', 'Parser: Class Initialized');
 	}
 
@@ -34,8 +36,8 @@ class Parser {
 		);
 	}
 	
-	public function cidades($force = FALSE){
-		$get = $this->getJS( $force );
+	public function cidades(){
+		$get = $this->getJS();
 
 		if( isset( $get['status'] ) && $get['status'] === FALSE ){
 			return $get;
@@ -121,10 +123,10 @@ class Parser {
 
 	// privates
 
-	private function getJS( $force = FALSE ){
+	private function getJS(){
 		$filename = 'javascript';
 
-		if( $force === FALSE ){
+		if( $this->force === FALSE ){
 			$cache = $this->ci->cache->get( $filename );
 
 			if( $cache !== FALSE ){
