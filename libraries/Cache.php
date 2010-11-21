@@ -305,7 +305,9 @@ class Cache
 			if ( ! @file_exists($test_path))
 			{
 				// create non existing dirs, asumes PHP5
-				if ( ! @mkdir($test_path, DIR_WRITE_MODE, TRUE)) return FALSE;
+				if ( ! @mkdir($test_path, DIR_WRITE_MODE, TRUE)) return array(
+					'status' => FALSE, 'message' => 'error creating non existing dirs'
+				);
 			}
 		}
 
@@ -360,7 +362,9 @@ class Cache
 		// Reset values
 		$this->_reset();
 
-		return $contents;
+		return array(
+			'status' => TRUE, 'data' => $contents
+		);
 	}
 
 	/**
