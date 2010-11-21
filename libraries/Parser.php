@@ -21,6 +21,8 @@ class Parser {
 			return FALSE;
 		}
 
+		$this->log('Getting page: ' . $url, 'getPage');
+
 		$get = $this->ci->curl->create( $url );
 
 		// attempt to retrieve the modification date
@@ -39,27 +41,33 @@ class Parser {
 	public function cidades(){
 		$get = $this->getJS();
 
-		if( isset( $get['status'] ) && $get['status'] === FALSE ){
-			return $get;
+		if( $get['status'] === FALSE ){
+			return $this->log( $get['message'], 'cidades', 'error' );
 		}
 
-		// start the transaction
+		$this->log('Get '. count( $get['data']['cidades'] ) .' items from cidades','cidades');
+
 		$this->db->trans_begin();
+		$this->log('Started the transaction','cidades');
 
 		$this->db->truncate('cidades');
+		$this->log('Table "cidades" truncated','cidades');
 
+		$this->log('Making the hardcore inserts','cidades');
 		foreach( $get['data']['cidades'] as $id => $name ){
 			$sql = $this->db->insert('cidades', array(
 				'id' => $id, 'nome' => $name
 			) );
 		}
 
-		// save or discard the changes
-		if( $this->db->trans_status() === FALSE ){
-			return $this->db->trans_rollback();
-		} else {
-			return $this->db->trans_commit();
-		}
+		$this->db->trans_complete();
+		
+		$s = $this->db->trans_status();
+
+		$this->log(
+			'Transaction completed with '. ( $s === TRUE ? 'SUCCESS' : 'ERROR' ),
+			'cidades', ( $s === TRUE ? 'info' : 'error' )
+		);
 	}
 	
 	public function javascript($options = array()){
@@ -135,7 +143,11 @@ class Parser {
 		if( $this->force === FALSE ){
 			$cache = $this->ci->cache->get( $filename );
 
-			if( $cache !== FALSE ){
+			if( $cache['status'] === FALSE ){
+				$this->log( $cache['message'], 'getJS');
+			} else {
+				$this->log('Getting file "'. $filename .'" from cache', 'getJS');
+
 				return $cache;
 			}
 		}
@@ -143,7 +155,12 @@ class Parser {
 		$get = $this->getPage( $this->urls[ $filename ] );
 
 		if( $get['error']['code'] != 0 ){
-			return $get['error'];
+			$this->log('Error getting the page: '. $this->urls[ $filename ], 'getPage', 'error' );
+
+			return array(
+				'status' => FALSE,
+				'message' => $get['error']['code'] .': '. $get['error']['message']
+			);
 		}
 
 		// encode the response to UTF8
@@ -164,7 +181,7 @@ class Parser {
 
 		if( eval( $file ) === FALSE ){
 			return array(
-				'code' => 0, 'message' => "syntax error, eval()'d code"
+				'status' => FALSE, 'message' => "syntax error, eval()'d code"
 			);
 		}
 

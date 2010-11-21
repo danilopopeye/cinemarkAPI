@@ -24,10 +24,9 @@ class api extends Controller {
 	}
 
 	function cidades(){
-		echo
-			'Parseando cidades...',
-				TAB, $this->parser->cidades() ? 'OK' : 'Erro',
-			BR;
+		echo BR,
+			'Parsing cidades...', BR,
+			$this->parser->cidades(), BR;
 	}
 } 
 
