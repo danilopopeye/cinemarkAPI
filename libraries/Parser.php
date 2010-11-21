@@ -124,9 +124,9 @@ class Parser {
 	// privates
 
 	private function log( $message, $func = FALSE, $type = 'info' ){
-		log_message( $type,
-			'Parser :: '. ( $func === FALSE ? '' : $func . '() :: ' ) . $message
-		);
+		$buff = 'Parser :: '. ( $func === FALSE ? '' : $func . '() :: ' ) . $message;
+		log_message( $type, $buff );
+		echo $buff, BR;
 	}
 
 	private function getJS(){
