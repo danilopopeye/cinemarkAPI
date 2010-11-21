@@ -11,7 +11,7 @@ class Create_table_cinemas {
 						'type' => 'INT',
 						'null' => FALSE
 					),
-					'name' => array(
+					'nome' => array(
 						'type' => 'VARCHAR',
 						'constraint' => '100',
 						'null' => FALSE
@@ -19,7 +19,7 @@ class Create_table_cinemas {
 					'endereco' => array(
 						'type' => 'VARCHAR',
 						'constraint' => '255',
-						'null' => FALSE
+						'null' => TRUE
 					),
 					'telefone' => array(
 						'type' => 'INT',

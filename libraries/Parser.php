@@ -195,7 +195,7 @@ class Parser {
 
 	private function parseItem($k, $v, $t) {
 		return array(
-			$t['id'] => $k, $t['name'] => $v
+			$t['id'] => $k, $t['nome'] => $v
 		);
 	}
 
@@ -224,7 +224,7 @@ class Parser {
 			foreach ($c as $id => $value) {
 				for ($i = 0, $l = count($value); $i < $l; $i++) {
 					$b[ $value[$i] ] = array(
-						'id' => $value[$i++], 'name' => $value[$i], 'idCidade' => $id
+						'id' => $value[$i++], 'nome' => $value[$i], 'idCidade' => $id
 					);
 				}
 			}
