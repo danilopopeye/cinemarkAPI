@@ -48,7 +48,7 @@ class Parser {
 
 		$this->db->truncate('cidades');
 
-		foreach( $get['cidades'] as $id => $name ){
+		foreach( $get['data']['cidades'] as $id => $name ){
 			$sql = $this->db->insert('cidades', array(
 				'id' => $id, 'nome' => $name
 			) );
