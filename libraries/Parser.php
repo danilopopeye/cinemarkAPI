@@ -70,6 +70,36 @@ class Parser {
 		);
 	}
 	
+	public function cinemas(){
+		$get = $this->getJS();
+
+		if( $get['status'] === FALSE ){
+			return $this->log( $get['message'], 'cinemas', 'error' );
+		}
+
+		$this->log('Get '. count( $get['data']['cinemas'] ) .' items from cinemas','cinemas');
+
+		$this->db->trans_begin();
+		$this->log('Started the transaction','cinemas');
+
+		$this->db->truncate('cinemas');
+		$this->log('Table "cinemas" truncated','cinemas');
+
+		$this->log('Making the hardcore inserts','cinemas');
+		foreach( $get['data']['cinemas'] as $cinema ){
+			$sql = $this->db->insert('cinemas', $cinema);
+		}
+
+		$this->db->trans_complete();
+		
+		$s = $this->db->trans_status();
+
+		$this->log(
+			'Transaction completed with '. ( $s === TRUE ? 'SUCCESS' : 'ERROR' ),
+			'cinemas', ( $s === TRUE ? 'info' : 'error' )
+		);
+	}
+	
 	public function javascript($options = array()){
 		$options = array_merge( array(
 			'cidades' => FALSE,

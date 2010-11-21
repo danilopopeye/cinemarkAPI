@@ -28,6 +28,12 @@ class api extends Controller {
 			'Parsing cidades...', BR,
 			$this->parser->cidades(), BR;
 	}
+
+	function cinemas(){
+		echo BR,
+			'Parsing cinemas...', BR,
+			$this->parser->cinemas(), BR;
+	}
 } 
 
 /* End of file api.php */
