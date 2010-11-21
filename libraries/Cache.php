@@ -176,7 +176,9 @@ class Cache
 		// Check directory permissions
 		if ( ! is_dir($this->path) OR ! is_really_writable($this->path))
 		{
-			return FALSE;
+			return array(
+				'status' => FALSE, 'message' => $this->path . ' is no a directory or isn\'t writable'
+			);
 		}
 
 		// Build the file path.
@@ -185,13 +187,17 @@ class Cache
 		// Check if the cache exists, if not return FALSE
 		if ( ! @file_exists($filepath))
 		{
-			return FALSE;
+			return array(
+				'status' => FALSE, 'message' => 'cache file '. $filepath .' not exists'
+			);
 		}
 
 		// Check if the cache can be opened, if not return FALSE
 		if ( ! $fp = @fopen($filepath, FOPEN_READ))
 		{
-			return FALSE;
+			return array(
+				'status' => FALSE, 'message' => 'can\'t open cache file: ' . $filepath
+			);
 		}
 
 		// Lock the cache
@@ -215,7 +221,9 @@ class Cache
 		if ($use_expires && ! empty($this->contents['__cache_expires']) && $this->contents['__cache_expires'] < time())
 		{
 			$this->delete($filename);
-			return FALSE;
+			return array(
+				'status' => FALSE, 'message' => 'cache has expired'
+			);
 		}
 
 		// Check Cache dependencies
@@ -229,7 +237,9 @@ class Cache
 				if (! file_exists($this->path.$dep.'.cache') or filemtime($this->path.$dep.'.cache') > $cache_created)
 				{
 					$this->delete($filename);
-					return FALSE;
+					return array(
+						'status' => FALSE, 'message' => 'dependency doesn\'t exist or is newer than this cache'
+					);
 				}
 			}
 		}
@@ -244,7 +254,10 @@ class Cache
 
 		// Return the cache
 		log_message('debug', "Cache retrieved: ".$filename);
-		return $this->contents;
+
+		return array(
+			'status' => TRUE, 'data' => $this->contents
+		);
 	}
 
 	/**
