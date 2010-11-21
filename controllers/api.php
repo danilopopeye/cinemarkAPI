@@ -1,5 +1,6 @@
 <?php
 define('BR',"\n");
+define('TAB',"\t");
 
 class api extends Controller {
 	function __construct(){
