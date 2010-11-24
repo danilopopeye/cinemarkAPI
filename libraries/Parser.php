@@ -180,6 +180,8 @@ class Parser {
 
 				return $cache;
 			}
+		} else {
+			$this->log('Forcing download', 'getJS');
 		}
 
 		$get = $this->getPage( $this->urls[ $filename ] );
