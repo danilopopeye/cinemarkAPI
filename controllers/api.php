@@ -34,6 +34,12 @@ class api extends Controller {
 			'Parsing cinemas...', BR,
 			$this->parser->cinemas(), BR;
 	}
+
+	function filmes(){
+		echo BR,
+			'Parsing filmes...', BR,
+			$this->parser->filmes(), BR;
+	}
 } 
 
 /* End of file api.php */

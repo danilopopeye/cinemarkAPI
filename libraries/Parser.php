@@ -99,6 +99,36 @@ class Parser {
 			'cinemas', ( $s === TRUE ? 'info' : 'error' )
 		);
 	}
+	
+	public function filmes(){
+		$get = $this->getJS();
+
+		if( $get['status'] === FALSE ){
+			return $this->log( $get['message'], 'filmes', 'error' );
+		}
+
+		$this->log('Get '. count( $get['data']['filmes'] ) .' items from filmes','filmes');
+
+		$this->db->trans_begin();
+		$this->log('Started the transaction','filmes');
+
+		$this->db->truncate('filmes');
+		$this->log('Table "filmes" truncated','filmes');
+
+		$this->log('Making the hardcore inserts','filmes');
+		foreach( $get['data']['filmes'] as $filme ){
+			$this->db->insert('filmes', $filme);
+		}
+
+		$this->db->trans_complete();
+
+		$s = $this->db->trans_status();
+
+		$this->log(
+			'Transaction completed with '. ( $s === TRUE ? 'SUCCESS' : 'ERROR' ),
+			'filmes', ( $s === TRUE ? 'info' : 'error' )
+		);
+	}
 
 	// privates
 
@@ -161,7 +191,7 @@ class Parser {
 		return $this->ci->cache->write( array(
 			'cidades' => $Cidades,
 			'cinemas' => $this->parseCinemas( $Cinemas ),
-			'filmes' => $Filmes,
+			'filmes' => $this->parseFilmes( $Filmes ),
 			'programacao' => $FilmesProgramados
 		), $filename );
 	}
@@ -186,6 +216,18 @@ class Parser {
 
 			return $b;
 		}
+	}
+
+	private function parseFilmes( $f ){
+		$buff = array();
+
+		foreach( $f as $id => $nome ){
+			$buff[ $id ] = array(
+				'id' => $id, 'nome' => $nome
+			);
+		}
+
+		return $buff;
 	}
 
 	private function parseCinemas($c) {
