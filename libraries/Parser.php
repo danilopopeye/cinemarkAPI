@@ -55,7 +55,7 @@ class Parser {
 
 		$this->log('Making the hardcore inserts','cidades');
 		foreach( $get['data']['cidades'] as $id => $name ){
-			$sql = $this->db->insert('cidades', array(
+			$this->db->insert('cidades', array(
 				'id' => $id, 'nome' => $name
 			) );
 		}
@@ -87,7 +87,7 @@ class Parser {
 
 		$this->log('Making the hardcore inserts','cinemas');
 		foreach( $get['data']['cinemas'] as $cinema ){
-			$sql = $this->db->insert('cinemas', $cinema);
+			$this->db->insert('cinemas', $cinema);
 		}
 
 		$this->db->trans_complete();
@@ -98,65 +98,6 @@ class Parser {
 			'Transaction completed with '. ( $s === TRUE ? 'SUCCESS' : 'ERROR' ),
 			'cinemas', ( $s === TRUE ? 'info' : 'error' )
 		);
-	}
-	
-	public function javascript($options = array()){
-		$options = array_merge( array(
-			'cidades' => FALSE,
-			'cinemas' => FALSE,
-			'filmes' => FALSE,
-			'programacao' => FALSE
-		), $options );
-
-		if( ! in_array( TRUE, array_values( $options ) ) ){
-			return array();
-		}
-
-		$db = $this->ci->db;
-
-		// start the transaction
-		$db->trans_begin();
-
-		// Cidades
-		if( $options['cidades'] === TRUE ){
-			ksort( $Cidades );
-
-			$db->truncate('cidades');
-
-			foreach( $Cidades as $id => $name ){
-				$sql = $db->insert('cidades', array(
-					'id' => $id, 'nome' => $name
-				) );
-			}
-		}
-
-		// Cinemas
-		if( $options['cinemas'] === TRUE ){
-			$Cinemas = $this->parseCinemas( $Cinemas );
-
-			ksort( $Cinemas );
-
-			print_r( $Cinemas );
-		}
-
-		// Filmes
-		if( $options['filmes'] === TRUE ){
-			ksort( $Filmes );
-
-			print_r( $Filmes );
-		}
-
-		// Programacao
-		if( $options['programacao'] === TRUE ){
-			print_r( $FilmesProgramados );
-		}
-
-		// save or discard the changes
-		if( $db->trans_status() === FALSE ){
-			$db->trans_rollback();
-		} else {
-			$db->trans_commit();
-		}
 	}
 
 	// privates
