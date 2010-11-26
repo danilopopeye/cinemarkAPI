@@ -196,28 +196,6 @@ class Parser {
 		), $filename );
 	}
 
-	private function parseItem($k, $v, $t) {
-		return array(
-			$t['id'] => $k, $t['nome'] => $v
-		);
-	}
-
-	private function parseArray($c, $t, $id = false) {
-		if (!is_array($c)) {
-			return array();
-		} elseif ($id) {
-			return $this->parseItem($id, $c[$id], $t);
-		} else {
-			$b = array();
-
-			foreach ($c as $k => $v) {
-				$b[ $k ] = $this->parseItem($k, $v, $t);
-			}
-
-			return $b;
-		}
-	}
-
 	private function parseFilmes( $f ){
 		$buff = array();
 
